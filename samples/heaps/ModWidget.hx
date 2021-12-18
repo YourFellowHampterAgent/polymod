@@ -23,7 +23,7 @@
 
 package samples.heaps;
 
-import h2d.Object;
+import h2d.Sprite;
 import h2d.Text;
 import h2d.Scene;
 
@@ -31,37 +31,36 @@ import h2d.Scene;
  * ...
  * @author 
  */
-class ModWidget extends Object
+class ModWidget extends Sprite
 {
 	public var active(default, null):Bool;
 	public var mod(default, null):String;
-
+	
 	public var status:Text;
 	public var callback:ModWidget->Int->Void;
-
+	
 	public var button:CheapButton;
-
 	private var moveLeft:CheapButton;
 	private var moveRight:CheapButton;
 
 	public var locX:Int;
 	public var locY:Int;
-
-	public function new(spr:Object, x:Int, y:Int, str:String, callback:ModWidget->Int->Void = null)
+	
+	public function new(spr:Sprite, x:Int, y:Int, str:String, callback:ModWidget->Int->Void=null)
 	{
 		super(spr);
-
+		
 		mod = str;
-
+		
 		this.callback = callback;
-
+		
 		status = text(this);
 		status.text = "inactive";
-
+		
 		button = new CheapButton(this, str, onClick);
 		moveLeft = new CheapButton(this, "<-", onMove.bind(-1));
 		moveRight = new CheapButton(this, "->", onMove.bind(1));
-
+		
 		setLoc(x, y);
 	}
 
@@ -76,7 +75,7 @@ class ModWidget extends Object
 		status.x = x;
 		status.maxWidth = 72;
 		status.y = button.y + 32 + 10;
-
+		
 		moveLeft.y = status.y + 32 + 10;
 		moveRight.y = moveLeft.y + 32 + 4;
 	}
@@ -97,15 +96,14 @@ class ModWidget extends Object
 		button.setText(mod);
 		status.text = active ? "active" : "inactive";
 	}
-
+	
 	public function showButtons(left:Bool, right:Bool)
 	{
-		if (moveLeft == null)
-			return;
+		if (moveLeft == null) return;
 		moveLeft.visible = left;
 		moveRight.visible = right;
 	}
-
+	
 	public function destroy()
 	{
 		callback = null;
@@ -115,7 +113,7 @@ class ModWidget extends Object
 		moveLeft.destroy();
 		moveRight.destroy();
 	}
-
+	
 	private function onClick()
 	{
 		active = !active;
@@ -125,7 +123,7 @@ class ModWidget extends Object
 			callback(this, 0);
 		}
 	}
-
+	
 	private function onMove(i:Int)
 	{
 		if (callback != null)
@@ -133,8 +131,8 @@ class ModWidget extends Object
 			callback(this, i);
 		}
 	}
-
-	private function text(spr:Object):Text
+	
+	private function text(spr:Sprite):Text
 	{
 		var font = hxd.Res.customFont.toFont();
 		var text = new h2d.Text(font, spr);
@@ -143,4 +141,5 @@ class ModWidget extends Object
 		text.textAlign = Center;
 		return text;
 	}
+	
 }

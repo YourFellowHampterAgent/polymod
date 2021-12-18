@@ -20,26 +20,64 @@
  * THE SOFTWARE.
  * 
  */
- 
- package polymod.fs;
 
-class StubFileSystem
+package polymod.fs;
+ 
+class PolymodFileSystem
 {
     public static inline function exists( path: String )
-        return false;
+    {
+        #if sys 
+            return SysFileSystem.exists(path);
+        #else
+            return StubFileSystem.exists(path);
+        #end
+    }
 
     public static inline function isDirectory( path: String )
-        return false;
+    {
+        #if sys 
+            return SysFileSystem.isDirectory(path);
+        #else
+            return StubFileSystem.isDirectory(path);
+        #end
+    }
 
     public static inline function readDirectory( path: String ) : Array<String>
-        return [];
+    {
+        #if sys 
+            return SysFileSystem.readDirectory(path);
+        #else
+            return StubFileSystem.readDirectory(path);
+        #end
+    }
 
     public static inline function getFileContent( path: String )
-        return null;
+    {
+        if(!exists(path)) return null;
+        #if sys 
+            return SysFileSystem.getFileContent(path);
+        #else
+            return StubFileSystem.getFileContent(path);
+        #end
+    }
 
     public static inline function getFileBytes( path: String )
-        return null;
+    {
+        if(!exists(path)) return null;
+        #if sys 
+            return SysFileSystem.getFileBytes(path);
+        #else
+            return StubFileSystem.getFileBytes(path);
+        #end
+    }
 
     public static inline function readDirectoryRecursive( path: String )
-        return [];
+    {
+        #if sys 
+            return SysFileSystem.readDirectoryRecursive(path);
+        #else
+            return StubFileSystem.readDirectoryRecursive(path);
+        #end
+    }
 }

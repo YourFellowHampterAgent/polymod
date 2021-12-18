@@ -9,14 +9,6 @@ Supports these frameworks:
 - Custom (provide your own backend)
 - KHA (Coming Soon)
 
-## NOTICE
-
-Polymod is now available via [HaxeLib](https://lib.haxe.org/p/polymod/)! If you have previously installed Polymod directly from git, please update your installation:
-
-```
-haxelib install polymod
-```
-
 ## Basic sample:
 ![A visual preview of the polymod OpenFL sample](preview.gif)
 
@@ -148,8 +140,8 @@ The Polymod format is fairly simple -- create a folder for your mod, and stick s
 ## Basic mod structure
 
 - root folder
-- append folder
-- merge folder
+- `_append` folder
+- `_merge` folder
 
 ### Root folder
 
@@ -157,13 +149,13 @@ Any files you place here will replace those found in the default asset library. 
 
 When loading multiple mods, if several mods all provide the same file, the last one loaded will provide the final asset. You can see this behavior in the included sample. This is why the order in which you load mods matters!
 
-### append folder
+### `_append` folder
 
 Any text files you place here will have their contents appended to the ends of files with the same names in the default asset library. So if the base game has a file called `text/hello.txt` that says:
 
 `Hello, world!`
 
-You can add additional lines by placing a file at `<modroot>/<appendFolder>/text/hello.txt` that says:
+You can add additional lines by placing a file at `<modroot>/_append/text/hello.txt` that says:
 
 `Hello from my mod!`
 
@@ -174,26 +166,9 @@ Hello, world!
 Hello from my mod!
 ```
 
-By default, The append Folder Name will be `_append`, But if you want/need to change it, there are two options:
+### `_merge` folder
 
-
-1. Add a `<haxedef name="POLYMOD_APPEND_FOLDER" value="[append name folder]" />` value to your project.xml.
-1. Add `PolymodConfig.appendFolder = "[append name folder]";` to your code somewhere. Make sure it's before you call Polymod.init or after (Recommended that you call it before) and before you load any assets.
-
-
-### merge folder
-
-This folder allows you to merge into files containing a more complex data structure, such as XML, CSV/TSV, or JSON. The format of the files in this folder depends on the file type of the file being merged into.
-
-By default, the merge folder will be `_merge` but again, to change the name of the stuff just use the append folder setting but instead of append, merge.
-So, something like:
-
-1. Adding a `<haxedef name="POLYMOD_MERGE_FOLDER" value="[merge name folder]" />` value to your project.xml.
-2. Adding `PolymodConfig.mergeFolder = "[append merge folder]";` to your code somewhere. Make sure it's before you call Polymod.init or after (Recommended that you call it before) and before you load any assets.
-
-#### XML
-
-Say you have a big complicated XML file at `data/stuff.xml` with lots of nodes:
+This is mostly meant for XML and CSV/TSV files. Say you have a big complicated XML file at `data/stuff.xml` with lots of nodes:
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
@@ -226,7 +201,7 @@ to this:
 <mode id="difficulty" values="super_hard"/>
 ```
 
-This is the file you would put in `<modroot>/<mergeFolder>/data/stuff.xml`:
+This is the file you would put in `<modroot>/_merge/data/stuff.xml`:
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
@@ -250,55 +225,10 @@ The `<merge>` tag instructs the mod loader thus:
 
 As soon as it finds the first match, it stops and merges the payload with the specified tag. Any attributes will be added to the base tag (overwriting any existing attributes with the same name, which in this case changes values from "easy" to just "super_hard", which is what we want). Furthermore, if the payload has child nodes, all of its children will be merged with the target tag as well.
 
-#### CSV/TSV
-
 CSV and TSV files can be merged as well, but no logic needs to be supplied. In this case, the mod loader will look for any rows in the base file whose first cell matches the same value as those in the merge file, and replace them with the rows from the merge file.
+
+TODO: Merge logic for JSON is currently planned but not yet supported.
 TODO: Advanced merge logic for CSV/TSV (specify a field other than the one at index 0 as the primary merge key) is not yet supported.
-
-#### JSON
-
-JSON acts somewhat similarly to XML. Say you have a data file like this:
-
-```json
-{
-    "data": {
-        "difficulty": "easy",
-	"nested": {
-	    "enemies": [
-	    	{
-		    "name": "foo"
-		},
-	    	{
-		    "name": "bar",
-		    "weapon": "deagle"
-		},
-	    	{
-		    "name": "baz"
-		}
-	    ]
-	}
-    }
-}
-```
-
-And you want to change the difficulty to `super_hard`, same idea as the XML. We also want to bump up Bar's meager Desert Eagle into a fearsome Minigun. Instead of specifying the whole structure and putting a merge tag underneath it, you create a single top-level array called `merge`, specify the full path to inject into, along with the payload to inject, like so:
-
-```json
-{
-    "merge": [
-    	{
-	    "target": "data.difficulty",
-	    "payload": "super_hard"
-	},
-	{
-	    "target": "data.nested.enemies[1].weapon",
-	    "payload": "minigun"
-	}
-    ]
-}
-```
-
-You can inject as many values as you like into as many paths as you like.
 
 ## Metadata
 
@@ -428,10 +358,6 @@ private function emptyFlower(flower:Flower)
 	script.execute();
 }
 ```
-
-**NOTE:** _Polymod loads the relevant script files to be executed in the object's constructor, therefore static methods are not supported. This may be changed in the future._
-
-**NOTE:** _Since scripts are loaded in the same manner as other assets, they therefore follow the standard rules for asset replace/append/merge. Keep this in mind when writing scripts, if you want to create and maintain compatibility between mods._
 
 ### Resolving other variables
 

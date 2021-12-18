@@ -24,25 +24,25 @@
 package samples.heaps;
 
 import hxd.Res;
-import h2d.Object;
+import h2d.Sprite;
 import h2d.Tile;
 import h2d.Bitmap;
 import h2d.Text;
 import h2d.Text.Align;
 import h2d.Scene;
 
-class Demo extends Object
+class Demo extends Sprite
 {
-	private var widgets:Array<ModWidget> = [];
+	private var widgets:Array<ModWidget>=[];
 	private var callback:Array<String>->Void;
-	private var sprites:Array<Object> = [];
-	private var texts:Array<Text> = [];
+	private var sprites:Array<Sprite>=[];
+	private var texts:Array<Text>=[];
 
-	public function new(scene:Scene, callback:Array<String>->Void)
+	public function new(scene:Scene, callback:Array<String>->Void) 
 	{
 		super(scene);
 		this.callback = callback;
-
+		
 		makeButtons();
 		drawImages();
 		drawText();
@@ -56,7 +56,7 @@ class Demo extends Object
 		texts = null;
 		callback = null;
 	}
-
+	
 	public function refresh()
 	{
 		for (spr in sprites)
@@ -72,7 +72,7 @@ class Demo extends Object
 		drawImages();
 		drawText();
 	}
-
+	
 	private function makeButtons()
 	{
 		var modDir:String = "mods";
@@ -87,11 +87,10 @@ class Demo extends Object
 		}
 		updateWidgets();
 	}
-
+	
 	private function updateWidgets()
 	{
-		if (widgets == null)
-			return;
+		if (widgets == null) return;
 		for (i in 0...widgets.length)
 		{
 			var showLeft = i != 0;
@@ -99,7 +98,7 @@ class Demo extends Object
 			widgets[i].showButtons(showLeft, showRight);
 		}
 	}
-
+	
 	private function onWidgetMove(w:ModWidget, i:Int)
 	{
 		if (i != 0)
@@ -113,7 +112,7 @@ class Demo extends Object
 			var other = widgets[newI];
 			other.swap(w);
 		}
-
+		
 		if (callback != null)
 		{
 			var theMods = [];
@@ -126,7 +125,7 @@ class Demo extends Object
 			}
 			callback(theMods);
 		}
-
+		
 		updateWidgets();
 	}
 
@@ -136,7 +135,7 @@ class Demo extends Object
 		var root = loader.fs.getRoot();
 		var path = root.get(str);
 		var files = [];
-		for (asset in path)
+		for(asset in path)
 		{
 			files.push(asset.path);
 		};
@@ -147,14 +146,11 @@ class Demo extends Object
 	{
 		var xx = 10;
 		var yy = 10;
-
+		
 		var images = list("img");
-		images.sort(function(a:String, b:String):Int
-		{
-			if (a < b)
-				return -1;
-			if (a > b)
-				return 1;
+		images.sort(function(a:String, b:String):Int{
+			if (a < b) return -1;
+			if (a > b) return  1;
 			return 0;
 		});
 		for (image in images)
@@ -166,14 +162,14 @@ class Demo extends Object
 			bmp.y = 0;
 			spr.x = xx;
 			spr.y = yy;
-
+			
 			var text = getText(Center);
-
+			
 			text.maxWidth = tile.width;
 			text.text = image;
 			text.x = xx;
 			text.y = spr.y + tile.height;
-
+			
 			xx += Std.int(tile.width + 10);
 		}
 	}
@@ -182,14 +178,11 @@ class Demo extends Object
 	{
 		var xx = 500;
 		var yy = 10;
-
+		
 		var texts = list("data");
-		texts.sort(function(a:String, b:String):Int
-		{
-			if (a < b)
-				return -1;
-			if (a > b)
-				return 1;
+		texts.sort(function(a:String,b:String):Int{
+			if(a < b) return -1;
+			if(a > b) return  1;
 			return 0;
 		});
 		for (t in texts)
@@ -203,41 +196,41 @@ class Demo extends Object
 				align = Left;
 				theWidth = 350;
 			}
-
+			
 			var textBox = getBox(theWidth, 152, 1);
-			textBox.x = xx - 1;
-			textBox.y = yy - 1;
-
+			textBox.x = xx-1;
+			textBox.y = yy-1;
+			
 			var text = getText(align);
 			text.x = xx;
 			text.y = yy;
 			text.maxWidth = theWidth;
-
+			
 			var str = Res.loader.load(t).toText();
-
+			
 			text.text = (str != null ? str : "null");
-
+			
 			var caption = getText(Center);
 			caption.x = xx;
 			caption.y = yy + 152 + caption.textHeight;
 			caption.text = t;
 			caption.maxWidth = text.maxWidth;
-
+			
 			yy += Std.int(152 + caption.textHeight + 35);
 		}
 	}
 
-	private function getBox(width:Int, height:Int, border:Int, color1:Int = 0x000000, color2:Int = 0xFFFFFF):Object
+	private function getBox(width:Int,height:Int,border:Int,color1:Int=0x000000,color2:Int=0xFFFFFF):Sprite
 	{
 		var spr = getSprite();
 		spr.x = 0;
 		spr.y = 0;
-		var col1 = Tile.fromColor(color1, width, height);
-		var bmp = new Bitmap(col1, spr);
+		var col1 = Tile.fromColor(color1,width,height);
+		var bmp = new Bitmap(col1,spr);
 		bmp.x = 0;
 		bmp.y = 0;
-		var col2 = Tile.fromColor(color2, width - 2, height - 2);
-		var bmp2 = new Bitmap(col2, spr);
+		var col2 = Tile.fromColor(color2,width-2,height-2);
+		var bmp2 = new Bitmap(col2,spr);
 		bmp2.x = border;
 		bmp2.y = border;
 		return spr;
@@ -254,9 +247,9 @@ class Demo extends Object
 		return text;
 	}
 
-	private function getSprite():Object
+	private function getSprite():Sprite
 	{
-		var sprite = new Object(this);
+		var sprite = new Sprite(this);
 		sprites.push(sprite);
 		return sprite;
 	}

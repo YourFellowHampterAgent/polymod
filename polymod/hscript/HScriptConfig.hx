@@ -20,14 +20,11 @@
  * THE SOFTWARE.
  * 
  */
+ 
+package polymod.hscript;
 
-package polymod.backends;
-
-class CastleBackend extends StubBackend
+class HScriptConfig
 {
-	public function new()
-	{
-		super();
-		Polymod.error(FAILED_CREATE_BACKEND, "CastleDB support in Polymod has not been implemented yet");
-	}
+    public static var rootPath:String = "data/";
+    public static var useNamespaceInPaths:Bool = true;
 }

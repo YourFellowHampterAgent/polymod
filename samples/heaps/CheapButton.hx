@@ -20,11 +20,11 @@
  * THE SOFTWARE.
  * 
  */
-
+ 
 package samples.heaps;
 
 import hxd.Res;
-import h2d.Object;
+import h2d.Sprite;
 import h2d.Text;
 import h2d.Scene;
 import h2d.Bitmap;
@@ -35,45 +35,45 @@ import h2d.Interactive;
  * ...
  * @author 
  */
-class CheapButton extends Object
+class CheapButton extends Sprite
 {
 	private var callback:Void->Void = null;
-	private var up:Object;
-	private var down:Object;
-	private var over:Object;
+	private var up:Sprite;
+	private var down:Sprite;
+	private var over:Sprite;
 	private var upT:Text;
 	private var overT:Text;
 	private var downT:Text;
-
+	
 	private var isOver:Bool = false;
 	private var isDown:Bool = false;
 
-	public function new(spr:Object, str:String, callback:Void->Void = null)
+	public function new(spr:Sprite, str:String, callback:Void->Void=null)
 	{
 		super(spr);
-
+		
 		this.callback = callback;
 
 		var img = Tile.fromColor(0xC0C0C0, 72, 32);
 		var img2 = Tile.fromColor(0xD0D0D0, 72, 32);
 		var img3 = Tile.fromColor(0x000000, 72, 32);
 
-		up = new Object(this);
-		over = new Object(this);
-		down = new Object(this);
+		up = new Sprite(this);
+		over = new Sprite(this);
+		down = new Sprite(this);
 
 		var upB = new Bitmap(img, up);
 		var overB = new Bitmap(img2, over);
 		var downB = new Bitmap(img3, down);
-
+		
 		upT = getText(Center);
 		overT = getText(Center);
 		downT = getText(Center);
-
+		
 		upT.text = str;
 		overT.text = str;
 		downT.text = str;
-
+		
 		overT.textColor = 0xFFFFFF;
 		downT.textColor = 0xFFFFFF;
 
@@ -83,7 +83,7 @@ class CheapButton extends Object
 		interaction.onPush = onDown;
 		interaction.onRelease = onUp;
 		interaction.onOut = onOut;
-
+		
 		onUp(null);
 	}
 
@@ -91,38 +91,37 @@ class CheapButton extends Object
 	{
 		upT.text = overT.text = downT.text = str;
 	}
-
+	
 	public function destroy()
 	{
 		removeChildren();
 		callback = null;
 	}
-
+	
 	private function onUp(event:hxd.Event)
 	{
 		isDown = false;
 		updateButton();
 	}
-
+	
 	private function onClick(event:hxd.Event)
 	{
-		if (callback != null)
-			callback();
+		if (callback != null) callback();
 		updateButton();
 	}
-
+	
 	private function onOver(event:hxd.Event)
 	{
 		isOver = true;
 		updateButton();
 	}
-
+	
 	private function onDown(event:hxd.Event)
 	{
 		isDown = true;
 		updateButton();
 	}
-
+	
 	private function onOut(event:hxd.Event)
 	{
 		isOver = false;
@@ -131,11 +130,11 @@ class CheapButton extends Object
 
 	private function updateButton()
 	{
-		if (isOver)
+		if(isOver)
 		{
 			down.visible = up.visible = false;
 			over.visible = true;
-			if (isDown)
+			if(isDown)
 			{
 				over.visible = false;
 				down.visible = true;
